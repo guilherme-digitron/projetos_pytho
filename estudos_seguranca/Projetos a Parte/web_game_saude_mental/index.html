@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equilíbrio Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <header class="stats-container">
+            <div class="stat">
+                <i class="fas fa-brain" title="Saúde Mental"></i>
+                <div class="progress-bar"><div id="mental-bar" class="progress"></div></div>
+            </div>
+            <div class="stat">
+                <i class="fas fa-users" title="Vida Social"></i>
+                <div class="progress-bar"><div id="social-bar" class="progress"></div></div>
+            </div>
+            <div class="stat">
+                <i class="fas fa-bolt" title="Energia"></i>
+                <div class="progress-bar"><div id="energy-bar" class="progress"></div></div>
+            </div>
+            <div class="stat">
+                <i class="fas fa-wifi" title="Conexão Online"></i>
+                <div class="progress-bar"><div id="online-bar" class="progress"></div></div>
+            </div>
+        </header>
+        
+        <div id="day-counter" class="day-counter">Dia 1</div>
+
+        <main class="card-stack">
+            <div class="card" id="game-card">
+                <div class="card-content">
+                    <p class="character" id="card-character"></p>
+                    <p class="text" id="card-text"></p>
+                </div>
+                <div class="card-choices">
+                    <span id="choice-left"></span>
+                    <span id="choice-right"></span>
+                </div>
+            </div>
+        </main>
+
+        <div class="game-over-screen" id="game-over-screen">
+            <h2 id="game-over-title">Fim de Jogo</h2>
+            <p id="game-over-message">Você perdeu o equilíbrio.</p>
+            <button id="restart-button">Tentar Novamente</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
