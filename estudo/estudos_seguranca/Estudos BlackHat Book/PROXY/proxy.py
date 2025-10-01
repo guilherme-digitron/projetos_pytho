@@ -80,3 +80,4 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
             remote_socket.close()
             print("[*] Não há mais dados. Fechando conexões.")
             break
+        
