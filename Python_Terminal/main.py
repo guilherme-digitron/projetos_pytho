@@ -1,38 +1,40 @@
 import curses
 
-class Config:
+global key
+    
+class Elements:
     
     def __init__(self, stdscr, x, y, y_cursor) -> None:
         self.stdscr = stdscr
-        pass
-    
-    def initial_config(self):
-        curses.curs_set(0)
-        self.stdscr.nodelay(True)
-        self.stdscr.keypad(True)
-        while True:
-            self.stdscr.clear()
-            self.stdscr.refresh()
-    
-
-class Elements:
-    
-    def __init__(self) -> None:
-        pass
+        self.x = x
+        self.y = y
+        self.y_cursor = y_cursor
     
     def text_centralize(self):
         pass
     
 
 class Menus:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, stdscr, x, y, y_cursor) -> None:
+        self.stdscr = stdscr
+        self.x = x
+        self.y = y
+        self.y_cursor = y_cursor
     
     def home(self):
-        pass
+        
+        self.stdscr.addstr(self.y, self.x, "Creditos")
 
 def main(stdscr):
-    Config().initial_config()
-    Menus().home()
+    #configs
+    curses.curs_set(0)
+    stdscr.nodelay(True)
+    stdscr.keypad(True)
+    stdscr.clear()
+
+    while True:
+        Menus(stdscr,2,5,5).home()
+        
+        
 
 curses.wrapper(main)
