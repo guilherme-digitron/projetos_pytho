@@ -3,9 +3,34 @@
 #ambas as class vai interagir entre si
 #uma Class menu que vai chamar os menu
 # a ideia geral e segmentar o maximo possivel para poder simplificar
-
+#
 #15/12/25
 #percebi que sou meio burro, nao tinha a necessidade de uma função config so vou fazer o config uma vez
 #alem disso usar uma funçao config estava criando uma conplexidade desnecessaria
 #devido a isso vou so fazer a config no inicio do main
 # quero que as funçoes de formataçao recebam os textos ckmo objetos
+#
+#16/12/2025
+#foi projetado a tecla de saida, com um simples if no menu, mas estou cogitando desenvolver as interaçoes com teclado em uma classe 
+# aparte e chamalas como funçoes, nao sei se seria apropriado, aumentaria a complexidade do projeto
+#
+#foi feito o desenvolvimento das primeiras funçoes de formataçao
+# a ideia e tranformar essa funçoes em objetos e chamalas sempre que conveniente
+# a estrutura por recomendação do google gemini ficou um pouco diferente do que eu tinha planejado
+#
+# agora a classe elements vai conter de fato elementos e caracteristicas de formataçao
+#
+# anotacao mental: reurn self e algo divino
+# com isso vou poder chamar minhas funcoes de elements em cascata e formatar da forma que quiser
+#
+#estou em um nivel proximo de ter uma erecao vendo minhas classes sendo chamadas e funcionando
+# foi implementado uma funcao parar printar listas dessa forma fica mais facil de printar os menus
+# nao me pergunte sobre como vou pegar qual opçao foi selecionada
+# agora parando para ver, nem todo parametro precisa ser passado em init
+# possa passar direto na funcao que vai usalo
+# isso diminui o acesso de certas funcoes que nao precisam desse parametro
+#
+#
+# minha primeira gambiarra: centralize_x pega o valor de self.texto
+#toda via ele não reflete o tamanho dos textos de addstring_list()
+# por isso sempre passar em self.texto a maior string da lista 
