@@ -1,4 +1,5 @@
 import curses
+from curses.textpad import Textbox
     
 class Elements:
     
@@ -25,7 +26,20 @@ class Elements:
     def addstring_list (self, list_):
         for i in list_:
             self.stdscr.addstr(self.y, self.x, i)
-            self.y += 1    
+            self.y += 1   
+            
+    def addinput(self, alt, lar):
+        
+        #crio a janela para o input e estilizo ela
+        my_win = curses.newwin(alt, lar, self.y, self.x)
+        my_win.attron(curses.color_pair(1))
+        my_win.box()
+        my_win.refresh()
+        
+        #crio o input
+        my_input = Textbox(my_win.derwin(1,lar-2,1,1)).edit().strip()
+        
+        self.stdscr.addstr(10,10,f"{my_input}")
 
 class Menus:
     def __init__(self, stdscr, x, y, y_cursor) -> None:
@@ -48,26 +62,27 @@ class Menus:
     ]
         #chama os objetos
         Elements(0, 2,logo_bb[1], self.stdscr).centralize_X().addstring_list(logo_bb)
-        Elements(0, 9,"Documentação", self.stdscr).centralize_X().addstring_list(["Iniciar","Créditos","Documentação"])
-        if key == ord("q"):
-            exit()
+        Elements(0, 9,"9 - Teste", self.stdscr).centralize_X().addstring_list(["1 - Teste","2 - Teste","3 - Teste","4 - Teste","5 - Teste","6 - Teste","7 - Teste","8 - Teste","9 - Teste"])
 
 def main(stdscr):
     #configs
     curses.curs_set(0)
-    stdscr.nodelay(True)
     stdscr.keypad(True)
+    stdscr.nodelay(True)
+    curses.start_color()
     stdscr.clear()
     
-    #seta a global que captura as teclas
-    global key
+    #Inicia um conjunto de cores
+    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     
-    #loop principal *limpa a tela *redesenha *recarrega
-    while True:
-        #deve pegar a tecla primeiro
-        key = stdscr.getch()
-        stdscr.clear()
-        Menus(stdscr,2,5,5).home()
-        stdscr.refresh()
-        
+    #Principal - ondes menus e objetos sao chmados
+    stdscr.clear()
+    Menus(stdscr,2,5,5).home()
+    stdscr.refresh()
+    #desenha o input
+    stdscr.nodelay(False)
+    Elements(curses.COLS//2 - 20, 15,"", stdscr).addinput(3,40) 
+    stdscr.refresh()
+    stdscr.getch()
+    
 curses.wrapper(main)

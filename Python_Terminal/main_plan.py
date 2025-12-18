@@ -33,4 +33,20 @@
 #
 # minha primeira gambiarra: centralize_x pega o valor de self.texto
 #toda via ele não reflete o tamanho dos textos de addstring_list()
-# por isso sempre passar em self.texto a maior string da lista 
+# por isso sempre passar em self.texto a maior string da lista
+#
+#18/12/2025
+#
+# Mudei um pouco a ideia do projeto
+# Não vai ser mais um rpg de texto mas sim um conjunto de ferramentas hackers
+# Hack the Planet!
+#
+#parece que para fazer o input o sistema injeta objeto dentro de objeto algo que fica confuso pra mim 
+#vou ter que me adaptar
+#
+#acabei de descobrir que a amanipulaçao de cores e uma grande bosta
+#por incrivel que pareça o terminal nao me deixa colocar a cor que eu quero
+# fica ai a critica pros donos dessa biblioteca de merda 
+# #RUST>PYTHON
+# #VOUREFATORARVOCECODIGOMALDITO
+# percebi que nao precisava de um while no main do jeito que vou fazer as coisas agora, isso deixa o codigo bem melhor
