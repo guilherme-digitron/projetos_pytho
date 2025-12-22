@@ -50,3 +50,11 @@
 # #RUST>PYTHON
 # #VOUREFATORARVOCECODIGOMALDITO
 # percebi que nao precisava de um while no main do jeito que vou fazer as coisas agora, isso deixa o codigo bem melhor
+#
+#22/12/2025
+#
+#hoje decidi recomeçar do zero, ate agora o projeto foi de grande aprendizagem
+#mas segui em um caminho desnecessariamente sem sentido
+#realmente nao tinha necessidade de usar curses
+#daria pra fazer tudo com print e input
+#vai ficar bem mais legal
