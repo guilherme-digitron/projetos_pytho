@@ -107,7 +107,7 @@ texto_input = input(f"{Fore.GREEN}>{Fore.YELLOW}> {Fore.CYAN}[{horario_atual}]{S
 print(f"Você digitou: {texto_input}")
 """
 
-#Coletar dados do Network feita pelo gemini 3.5
+"""#Coletar dados do Network feita pelo gemini 3.5
 
 import socket
 import psutil # Biblioteca mencionada na fonte [1] para listar endereços
@@ -197,4 +197,130 @@ def info_sistema_bruto():
     
     print(f"{Fore.GREEN}{resultado.stdout}{Fore.RESET}")
 
-info_sistema_bruto()
+info_sistema_bruto()"""
+
+#Coletar ainda mais informaçao para network com python notebook LM
+
+import socket
+import psutil
+import subprocess
+import platform
+import re
+from colorama import init, Fore, Style
+
+# Inicializa o colorama
+init(autoreset=True)
+
+class NetworkAuditor:
+    def __init__(self):
+        self.colors = {
+            'titulo': Fore.MAGENTA + Style.BRIGHT,
+            'chave': Fore.CYAN,
+            'valor': Fore.GREEN,
+            'aviso': Fore.YELLOW,
+            'erro': Fore.RED,
+            'reset': Style.RESET_ALL
+        }
+        self.sistema = platform.system()
+
+    def banner(self, texto):
+        print(f"\n{self.colors['titulo']}=== {texto} ==={self.colors['reset']}")
+
+    def get_open_ports(self):
+        """
+        Lista todas as portas TCP/UDP em estado de escuta (Listening) na máquina.
+        Utiliza psutil para verificar conexões do sistema.
+        """
+        self.banner("PORTAS ABERTAS (LISTENING)")
+        try:
+            # Pega conexões do tipo INET (IPv4)
+            conexoes = psutil.net_connections(kind='inet')
+            for conn in conexoes:
+                # Filtra apenas serviços que estão ouvindo (Portas abertas)
+                if conn.status == 'LISTEN':
+                    ip, porta = conn.laddr
+                    # Tenta descobrir o nome do serviço (ex: 80 -> http)
+                    try:
+                        servico = socket.getservbyport(porta)
+                    except:
+                        servico = "desconhecido"
+                    
+                    pid = conn.pid
+                    nome_processo = psutil.Process(pid).name() if pid else "System"
+                    
+                    print(f"{self.colors['chave']}Porta {porta}{self.colors['reset']} ({servico}) "
+                          f"| {self.colors['valor']}Processo: {nome_processo} (PID: {pid}){self.colors['reset']}")
+        except PermissionError:
+            print(f"{self.colors['erro']}Erro: Execute como Administrador/Root para ver todos os processos.{self.colors['reset']}")
+
+    def get_gateway_dns(self):
+        """
+        Obtém Gateway e DNS executando comandos do SO via subprocess.
+        """
+        self.banner("GATEWAY E DNS")
+        
+        # O módulo OS/Subprocess permite executar comandos do terminal [2, 3]
+        if self.sistema == "Windows":
+            comando = "ipconfig /all"
+            regex_gateway = r"Gateway Padr.o . . . . . . . . . . . . . : ([0-9.]+)" # Ajuste para PT-BR
+            regex_dns = r"Servidores DNS . . . . . . . . . . . . . : ([0-9.]+)"
+        else:
+            comando = "nmcli dev show" # Comum em distros Linux modernas
+            # Alternativa Linux: ler /etc/resolv.conf ou usar 'ip route'
+        
+        try:
+            # Executa o comando e captura a saída [2]
+            resultado = subprocess.run(comando, shell=True, capture_output=True, text=True, errors='ignore')
+            saida = resultado.stdout
+            
+            print(f"{self.colors['aviso']}Nota: Exibindo dados brutos filtrados do sistema:{self.colors['reset']}\n")
+            
+            # Filtragem simples para Windows (exemplo)
+            if self.sistema == "Windows":
+                for linha in saida.splitlines():
+                    if "Gateway" in linha or "DNS" in linha:
+                        print(f"{self.colors['valor']}{linha.strip()}{self.colors['reset']}")
+            else:
+                # Exibe saída crua no Linux se não tiver regex específico
+                print(saida)
+                
+        except Exception as e:
+            print(f"{self.colors['erro']}Não foi possível obter detalhes via comando: {e}{self.colors['reset']}")
+
+    def trace_route(self):
+        """
+        Realiza um traceroute para um IP externo (ex: Google DNS 8.8.8.8)
+        para mostrar a rota da conexão.
+        """
+        self.banner("ROTA DE CONEXÃO (TRACEROUTE)")
+        target = "8.8.8.8"
+        
+        if self.sistema == "Windows":
+            cmd = ["tracert", "-d", target] # -d não resolve nomes (mais rápido)
+        else:
+            cmd = ["traceroute", "-n", target]
+
+        print(f"{self.colors['aviso']}Mapeando rota para {target}... Isso pode demorar.{self.colors['reset']}")
+        
+        try:
+            # Executa o comando e imprime linha a linha em tempo real
+            processo = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            
+            while True:
+                linha = processo.stdout.readline()
+                if not linha and processo.poll() is not None:
+                    break
+                if linha:
+                    # Pinta os saltos (hops)
+                    if any(char.isdigit() for char in linha): 
+                        print(f"{self.colors['valor']}{linha.strip()}{self.colors['reset']}")
+                    else:
+                        print(linha.strip())
+        except FileNotFoundError:
+            print(f"{self.colors['erro']}Comando de traceroute não encontrado no sistema.{self.colors['reset']}")
+
+if __name__ == "__main__":
+    auditor = NetworkAuditor()
+    auditor.get_open_ports()
+    auditor.get_gateway_dns()
+    auditor.trace_route()

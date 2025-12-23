@@ -58,3 +58,23 @@
 #realmente nao tinha necessidade de usar curses
 #daria pra fazer tudo com print e input
 #vai ficar bem mais legal
+#
+#23/12/2025
+#
+#consegui fazer o primeiro comando funcionar, esse programa vai ser incrivel
+# a estrutura modular que planejei pra ele vai permitir que qualquer comano seja adicionado
+# vai ser realmente incrivel
+# dei algumas mexidas na estrutura bas
+# tirei algumas classes desnecessarias
+# esse treco de importação com python e uma loucura, estou tentando entender
+#mas achei muito interessante
+# da para fazer um projeto legal usando isso
+#
+#resolvi excluir o network_main.py
+# a ideia era centralizara os itens de network nele e chamar todos apartir dele
+# mas nao tem necessidade de aumentar tanto a complexidade do projeto
+#
+#consegui começar o modulo de logs
+# tava penssando em criar um programa tipo instalador que permite que voce direcione um codigo especifico 
+# pro terminal junto com o comando pra chamalo, isso poderia criar um senso de comunidade em torno desse programa
+# nao deixo de ficar imaginando ate onde essas simples linhas de codigos podem chegar
