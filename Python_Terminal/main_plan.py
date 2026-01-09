@@ -78,3 +78,12 @@
 # tava penssando em criar um programa tipo instalador que permite que voce direcione um codigo especifico 
 # pro terminal junto com o comando pra chamalo, isso poderia criar um senso de comunidade em torno desse programa
 # nao deixo de ficar imaginando ate onde essas simples linhas de codigos podem chegar
+#
+#09/01/2025
+#
+#hora de voltar para esse projeto
+#vou centralizar todos os meus codigos nele e danesse
+#vou colocar banco de dados tambem para tornar escalavel
+#naoo vou negar usei vibe coding no banco de dados e quero mais que se foda
+#perdao aos leitores mais hoje I drink coffee gelado e nao fiquei bem com isso
+#de novo vou vir com a ideia de centralizar os imports em um unico arquivo

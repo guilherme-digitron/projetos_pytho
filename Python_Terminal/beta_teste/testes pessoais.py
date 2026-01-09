@@ -201,126 +201,166 @@ info_sistema_bruto()"""
 
 #Coletar ainda mais informaçao para network com python notebook LM
 
-import socket
-import psutil
-import subprocess
-import platform
-import re
-from colorama import init, Fore, Style
+#banco de dados
 
-# Inicializa o colorama
-init(autoreset=True)
+import sqlite3
+import os
 
-class NetworkAuditor:
-    def __init__(self):
-        self.colors = {
-            'titulo': Fore.MAGENTA + Style.BRIGHT,
-            'chave': Fore.CYAN,
-            'valor': Fore.GREEN,
-            'aviso': Fore.YELLOW,
-            'erro': Fore.RED,
-            'reset': Style.RESET_ALL
-        }
-        self.sistema = platform.system()
-
-    def banner(self, texto):
-        print(f"\n{self.colors['titulo']}=== {texto} ==={self.colors['reset']}")
-
-    def get_open_ports(self):
-        """
-        Lista todas as portas TCP/UDP em estado de escuta (Listening) na máquina.
-        Utiliza psutil para verificar conexões do sistema.
-        """
-        self.banner("PORTAS ABERTAS (LISTENING)")
-        try:
-            # Pega conexões do tipo INET (IPv4)
-            conexoes = psutil.net_connections(kind='inet')
-            for conn in conexoes:
-                # Filtra apenas serviços que estão ouvindo (Portas abertas)
-                if conn.status == 'LISTEN':
-                    ip, porta = conn.laddr
-                    # Tenta descobrir o nome do serviço (ex: 80 -> http)
-                    try:
-                        servico = socket.getservbyport(porta)
-                    except:
-                        servico = "desconhecido"
-                    
-                    pid = conn.pid
-                    nome_processo = psutil.Process(pid).name() if pid else "System"
-                    
-                    print(f"{self.colors['chave']}Porta {porta}{self.colors['reset']} ({servico}) "
-                          f"| {self.colors['valor']}Processo: {nome_processo} (PID: {pid}){self.colors['reset']}")
-        except PermissionError:
-            print(f"{self.colors['erro']}Erro: Execute como Administrador/Root para ver todos os processos.{self.colors['reset']}")
-
-    def get_gateway_dns(self):
-        """
-        Obtém Gateway e DNS executando comandos do SO via subprocess.
-        """
-        self.banner("GATEWAY E DNS")
+class CommandDatabase:
+    def __init__(self, db_name='commands.db'):
+        """Inicializa o banco de dados"""
+        self.db_name = db_name
+        self.conn = None
+        self.cursor = None
+        self.connect()
+        self.create_table()
+        self.populate_default_commands()
+    
+    def connect(self):
+        """Conecta ao banco de dados"""
+        self.conn = sqlite3.connect(self.db_name)
+        self.cursor = self.conn.cursor()
+    
+    def create_table(self):
+        """Cria a tabela de comandos se não existir"""
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS commands (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                command TEXT UNIQUE NOT NULL,
+                description TEXT,
+                module TEXT NOT NULL,
+                function TEXT NOT NULL,
+                banner_text TEXT,
+                active INTEGER DEFAULT 1
+            )
+        ''')
+        self.conn.commit()
+    
+    def populate_default_commands(self):
+        """Popula o banco com os comandos padrão (se ainda não existirem)"""
+        default_commands = [
+            {
+                'command': 'net.IP',
+                'description': 'Mostra seu IP local',
+                'module': 'network',
+                'function': 'get_IP',
+                'banner_text': 'YOUR LOCAL IP'
+            },
+            {
+                'command': 'net.INTERFACES',
+                'description': 'Lista suas interfaces de rede',
+                'module': 'network',
+                'function': 'get_INTERFACES',
+                'banner_text': 'YOUR NIC\'s'
+            },
+            {
+                'command': 'net.CONNECTIONS',
+                'description': 'Mostra suas conexões ativas',
+                'module': 'network',
+                'function': 'get_PORTS',
+                'banner_text': 'YOUR CONNECTIONS'
+            },
+            {
+                'command': 'log.CONNECTIONS',
+                'description': 'Mostra logs de conexões',
+                'module': 'logs',
+                'function': 'get_CONNECTIONS',
+                'banner_text': 'YOUR CONNECTIONS LOGS'
+            },
+            {
+                'command': 'help',
+                'description': 'Lista todos os comandos disponíveis',
+                'module': 'builtin',
+                'function': 'show_help',
+                'banner_text': 'COMANDOS DISPONÍVEIS'
+            },
+            {
+                'command': 'quit',
+                'description': 'Sai do terminal',
+                'module': 'builtin',
+                'function': 'exit_terminal',
+                'banner_text': None
+            }
+        ]
         
-        # O módulo OS/Subprocess permite executar comandos do terminal [2, 3]
-        if self.sistema == "Windows":
-            comando = "ipconfig /all"
-            regex_gateway = r"Gateway Padr.o . . . . . . . . . . . . . : ([0-9.]+)" # Ajuste para PT-BR
-            regex_dns = r"Servidores DNS . . . . . . . . . . . . . : ([0-9.]+)"
-        else:
-            comando = "nmcli dev show" # Comum em distros Linux modernas
-            # Alternativa Linux: ler /etc/resolv.conf ou usar 'ip route'
+        for cmd in default_commands:
+            try:
+                self.add_command(**cmd)
+            except sqlite3.IntegrityError:
+                # Comando já existe, ignora
+                pass
+    
+    def add_command(self, command, description, module, function, banner_text=None, active=1):
+        """Adiciona um novo comando ao banco"""
+        self.cursor.execute('''
+            INSERT INTO commands (command, description, module, function, banner_text, active)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (command, description, module, function, banner_text, active))
+        self.conn.commit()
+    
+    def get_command(self, command):
+        """Busca um comando específico no banco"""
+        self.cursor.execute('''
+            SELECT command, description, module, function, banner_text, active
+            FROM commands
+            WHERE command = ? AND active = 1
+        ''', (command,))
         
-        try:
-            # Executa o comando e captura a saída [2]
-            resultado = subprocess.run(comando, shell=True, capture_output=True, text=True, errors='ignore')
-            saida = resultado.stdout
-            
-            print(f"{self.colors['aviso']}Nota: Exibindo dados brutos filtrados do sistema:{self.colors['reset']}\n")
-            
-            # Filtragem simples para Windows (exemplo)
-            if self.sistema == "Windows":
-                for linha in saida.splitlines():
-                    if "Gateway" in linha or "DNS" in linha:
-                        print(f"{self.colors['valor']}{linha.strip()}{self.colors['reset']}")
-            else:
-                # Exibe saída crua no Linux se não tiver regex específico
-                print(saida)
-                
-        except Exception as e:
-            print(f"{self.colors['erro']}Não foi possível obter detalhes via comando: {e}{self.colors['reset']}")
-
-    def trace_route(self):
-        """
-        Realiza um traceroute para um IP externo (ex: Google DNS 8.8.8.8)
-        para mostrar a rota da conexão.
-        """
-        self.banner("ROTA DE CONEXÃO (TRACEROUTE)")
-        target = "8.8.8.8"
+        result = self.cursor.fetchone()
+        if result:
+            return {
+                'command': result[0],
+                'description': result[1],
+                'module': result[2],
+                'function': result[3],
+                'banner_text': result[4],
+                'active': result[5]
+            }
+        return None
+    
+    def get_all_commands(self):
+        """Lista todos os comandos ativos"""
+        self.cursor.execute('''
+            SELECT command, description, module, function, banner_text
+            FROM commands
+            WHERE active = 1
+            ORDER BY command
+        ''')
         
-        if self.sistema == "Windows":
-            cmd = ["tracert", "-d", target] # -d não resolve nomes (mais rápido)
-        else:
-            cmd = ["traceroute", "-n", target]
-
-        print(f"{self.colors['aviso']}Mapeando rota para {target}... Isso pode demorar.{self.colors['reset']}")
+        commands = []
+        for row in self.cursor.fetchall():
+            commands.append({
+                'command': row[0],
+                'description': row[1],
+                'module': row[2],
+                'function': row[3],
+                'banner_text': row[4]
+            })
+        return commands
+    
+    def update_command(self, command, **kwargs):
+        """Atualiza um comando existente"""
+        allowed_fields = ['description', 'module', 'function', 'banner_text', 'active']
+        updates = []
+        values = []
         
-        try:
-            # Executa o comando e imprime linha a linha em tempo real
-            processo = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            
-            while True:
-                linha = processo.stdout.readline()
-                if not linha and processo.poll() is not None:
-                    break
-                if linha:
-                    # Pinta os saltos (hops)
-                    if any(char.isdigit() for char in linha): 
-                        print(f"{self.colors['valor']}{linha.strip()}{self.colors['reset']}")
-                    else:
-                        print(linha.strip())
-        except FileNotFoundError:
-            print(f"{self.colors['erro']}Comando de traceroute não encontrado no sistema.{self.colors['reset']}")
-
-if __name__ == "__main__":
-    auditor = NetworkAuditor()
-    auditor.get_open_ports()
-    auditor.get_gateway_dns()
-    auditor.trace_route()
+        for field, value in kwargs.items():
+            if field in allowed_fields:
+                updates.append(f"{field} = ?")
+                values.append(value)
+        
+        if updates:
+            values.append(command)
+            query = f"UPDATE commands SET {', '.join(updates)} WHERE command = ?"
+            self.cursor.execute(query, values)
+            self.conn.commit()
+    
+    def delete_command(self, command):
+        """Desativa um comando (soft delete)"""
+        self.cursor.execute('UPDATE commands SET active = 0 WHERE command = ?', (command,))
+        self.conn.commit()
+    
+    def close(self):
+        """Fecha a conexão com o banco"""
+        if self.conn:
+            self.conn.close()
