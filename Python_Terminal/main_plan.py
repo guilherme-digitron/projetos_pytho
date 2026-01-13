@@ -87,3 +87,10 @@
 #naoo vou negar usei vibe coding no banco de dados e quero mais que se foda
 #perdao aos leitores mais hoje I drink coffee gelado e nao fiquei bem com isso
 #de novo vou vir com a ideia de centralizar os imports em um unico arquivo
+#
+#13/01/2026
+#
+#unifiquei todos os scriptis exernos na pasta Imports e refatorei todos eles com o modelo Claude mas basico do Claude
+# a ideia e que o projet seja completamente modular entao qualquer elemento com problema que nao faça parte do principal 
+# nao representa uma ameaça, pelo menos nao a funcionalidade geral do codigo
+#quato a segurança isso e discutivel

@@ -1,5 +1,5 @@
 #esse arquivo vai centralizar as funçoes que vao ser passadas para o banco de dados
-from projetos_pytho_main.projetos_menores import *
+from Imports import *
 class Imports():
     def __init__(self) -> None:
         pass
@@ -7,6 +7,15 @@ class Imports():
     def baskara(self):
         return baskara.main()
     
+    def string_analizer(self):
+        return leitor_propriedades.main()
+    
+    def music(self):
+        return music.main()
+    
+    def pedra_papel_tesoura(self):
+        return padra_papel_tesoura.main()
+    
 #testar se ta importando pra esse arquivo
-#Imports().baskara()
+#padra_papel_tesoura.main()
     

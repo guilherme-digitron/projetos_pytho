@@ -83,6 +83,31 @@ class CommandDatabase:
                 'module': 'imports',
                 'function': 'baskara',
                 'banner_text': None
+            },
+            #string analizer comandos
+            {
+                'command': 'anal.STRING',
+                'description': 'analiza uma string inserida',
+                'module': 'imports',
+                'function': 'string_analizer',
+                'banner_text': None
+            },
+            #string analizer comandos
+            {
+                'command': 'sad',
+                'description': 'Lets put a smile on that face.',
+                'module': 'imports',
+                'function': 'music',
+                'banner_text': None
+            },
+            
+            #Game, pedra papel e tesoura
+            {
+                'command': 'game.JOKENPO',
+                'description': 'pedra, papel e tesoura',
+                'module': 'imports',
+                'function': 'pedra_papel_tesoura',
+                'banner_text': 'Jokenpô'
             }
         ]
         
