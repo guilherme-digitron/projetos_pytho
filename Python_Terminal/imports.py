@@ -16,6 +16,24 @@ class Imports():
     def pedra_papel_tesoura(self):
         return padra_papel_tesoura.main()
     
+    def c_binario(self):
+        return c_binario.main()
+    
+    def ddos(self):
+        return ddos.main()
+    
+    def netcat(self):
+        return netcat.main()
+    
+    def scanner_web(self):
+        return scanner_web.main()
+    
+    def senhas(self):
+        return senhas.main()
+    
+    def sniffer(self):
+        return sniffer.main()
+    
 #testar se ta importando pra esse arquivo
 #padra_papel_tesoura.main()
     

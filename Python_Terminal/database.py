@@ -34,6 +34,7 @@ class CommandDatabase:
     def populate_default_commands(self):
         """Popula o banco com os comandos padrão (se ainda não existirem)"""
         default_commands = [
+            #network comandos
             {
                 'command': 'net.IP',
                 'description': 'Mostra seu IP local',
@@ -54,6 +55,34 @@ class CommandDatabase:
                 'module': 'network',
                 'function': 'get_PORTS',
                 'banner_text': 'YOUR CONNECTIONS'
+            },
+            {
+                'command': 'net.HOST_ANALYZER',
+                'description': 'analiza e monitora hosts publicos',
+                'module': 'imports',
+                'function': 'ddos',
+                'banner_text': ''
+            },
+            {
+                'command': 'net.WEB_SCANNER',
+                'description': 'scanner web basico',
+                'module': 'imports',
+                'function': 'scanner_web',
+                'banner_text': ''
+            },
+            {
+                'command': 'net.NETCAT',
+                'description': 'canivete suiço',
+                'module': 'imports',
+                'function': 'netcat',
+                'banner_text': ''
+            },
+            {
+                'command': 'net.SNIFFER',
+                'description': 'sniffer basico de icmtp',
+                'module': 'imports',
+                'function': 'sniffer',
+                'banner_text': ''
             },
             {
                 'command': 'log.CONNECTIONS',
@@ -92,7 +121,15 @@ class CommandDatabase:
                 'function': 'string_analizer',
                 'banner_text': None
             },
-            #string analizer comandos
+            #conversor comandos
+            {
+                'command': 'con.BINARIO',
+                'description': 'conversor Binario <=> Decimal',
+                'module': 'imports',
+                'function': 'c_binario',
+                'banner_text': ''
+            },
+            #sorria
             {
                 'command': 'sad',
                 'description': 'Lets put a smile on that face.',
@@ -108,7 +145,15 @@ class CommandDatabase:
                 'module': 'imports',
                 'function': 'pedra_papel_tesoura',
                 'banner_text': 'Jokenpô'
-            }
+            },
+            #ferramentas gerais
+            {
+                'command': 'tool.PASSWORD',
+                'description': 'gerador de senhas',
+                'module': 'imports',
+                'function': 'senhas',
+                'banner_text': ''
+            },
         ]
         
         for cmd in default_commands:

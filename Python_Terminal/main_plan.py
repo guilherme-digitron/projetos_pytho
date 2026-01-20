@@ -94,3 +94,8 @@
 # a ideia e que o projet seja completamente modular entao qualquer elemento com problema que nao faça parte do principal 
 # nao representa uma ameaça, pelo menos nao a funcionalidade geral do codigo
 #quato a segurança isso e discutivel
+#
+#20/01/2026
+#
+#finalmente os projetos foram unificados
+#agora chegou a hora de desenvolver ainda mais modulos
